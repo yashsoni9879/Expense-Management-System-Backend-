@@ -1,18 +1,21 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 require("dotenv").config();
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/expense_db";
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(MONGODB_URI)
   .then(() => {
-    console.log("Connected to MongoDB!!!");
+    console.log("Connected to MongoDB");
   })
   .catch((err) => {
-    console.log("Error connecting to MongoDB", err);
+    console.error("Error connecting to MongoDB", err);
   });
-
-const app = express();
-app.use(express.json());
 
 const routUser = require("./routes/users.route.js");
 app.use("/users", routUser);
@@ -35,6 +38,7 @@ app.use("/expense", routExpense);
 const routCategory = require("./routes/category.route.js");
 app.use("/category", routCategory);
 
-app.listen(process.env.PORT, () => {
-  console.log("Server is running on port " + process.env.PORT);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log("Server is running on port " + PORT);
 });

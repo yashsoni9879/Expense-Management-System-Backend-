@@ -11,15 +11,7 @@ const {
 const { authMidddleware } = require("../middlewares/auth.middleware.js");
 const routCategory = express.Router();
 
-routCategory.use(authMidddleware);
-
-// get all
-routCategory.get("/", getAll);
-
-// get by id
-routCategory.get("/:id", getByID);
-
-//login
+// login (public)
 routCategory.post("/login", async (req, res) => {
   try {
     const data = await checkLogin(req.body);
@@ -32,6 +24,14 @@ routCategory.post("/login", async (req, res) => {
     });
   }
 });
+
+routCategory.use(authMidddleware);
+
+// get all
+routCategory.get("/", getAll);
+
+// get by id
+routCategory.get("/:id", getByID);
 
 // insert
 routCategory.post("/", insert);

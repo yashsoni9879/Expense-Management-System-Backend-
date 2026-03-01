@@ -84,8 +84,10 @@ async function checkLogin(formData) {
   } catch (err) {
     console.error("Login error:", err);
     return {
+      
       error: true,
       message: "Something went wrong",
+      errorDetails: err.message
     };
   }
 }

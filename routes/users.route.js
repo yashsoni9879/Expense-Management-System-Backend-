@@ -13,15 +13,7 @@ const { authMidddleware } = require("../middlewares/auth.middleware.js");
 
 const routUser = express.Router();
 
-routUser.use(authMidddleware);
-
-// get all
-routUser.get("/", getAll);
-
-// get by id
-routUser.get("/:id", getByID);
-
-//login
+//login (public)
 routUser.post("/login", async (req, res) => {
   try {
     const data = await checkLogin(req.body);
@@ -34,6 +26,14 @@ routUser.post("/login", async (req, res) => {
     });
   }
 });
+
+routUser.use(authMidddleware);
+
+// get all
+routUser.get("/", getAll);
+
+// get by id
+routUser.get("/:id", getByID);
 
 // insert
 routUser.post("/", insert);

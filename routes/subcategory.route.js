@@ -1,6 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const Subcategory = require("../models/subcategory.model.js");
 const {
   getAll,
   getByID,
@@ -8,20 +6,13 @@ const {
   update,
   remove,
   checkLogin,
-} = require("../services/users.service.js");
+} = require("../services/subcategory.service.js");
 
 const { authMidddleware } = require("../middlewares/auth.middleware.js");
 
 const routSubcategory = express.Router();
-routSubcategory.use(authMidddleware);
 
-//get all
-routSubcategory.get("/", getAll);
-
-//get by id
-routSubcategory.get("/:id", getByID);
-
-//login
+// login (public)
 routSubcategory.post("/login", async (req, res) => {
   try {
     const data = await checkLogin(req.body);
@@ -34,6 +25,14 @@ routSubcategory.post("/login", async (req, res) => {
     });
   }
 });
+
+routSubcategory.use(authMidddleware);
+
+// get all
+routSubcategory.get("/", getAll);
+
+// get by id
+routSubcategory.get("/:id", getByID);
 
 // insert
 routSubcategory.post("/", insert);

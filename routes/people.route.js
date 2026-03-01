@@ -6,25 +6,10 @@ const {
   insert,
   update,
   remove,
-  checkLogin,
 } = require("../services/people.service.js");
 const { authMidddleware } = require("../middlewares/auth.middleware.js");
 
 const routPeople = express.Router();
-
-// login (public)
-routPeople.post("/login", async (req, res) => {
-  try {
-    const data = await checkLogin(req.body);
-    res.status(data.error ? 401 : 200).send(data);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send({
-      error: true,
-      message: err.message,
-    });
-  }
-});
 
 routPeople.use(authMidddleware);
 

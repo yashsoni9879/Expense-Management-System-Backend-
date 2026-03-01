@@ -152,4 +152,53 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getByID, insert, update, remove, checkLogin };
+const register = async (req, res) => {
+  try {
+    const { userName, emailAddress, password, mobileNo, profileImage } = req.body;
+
+    if (!userName || !emailAddress || !password) {
+      return res.status(400).json({ error: true, message: "userName, emailAddress and password are required" });
+    }
+
+    // Check for duplicate userName
+    const existingUserName = await User.findOne({ userName }).exec();
+    if (existingUserName) {
+      return res.status(409).json({ error: true, message: "Username already taken" });
+    }
+
+    // Check for duplicate emailAddress
+    const existingEmail = await User.findOne({ emailAddress }).exec();
+    if (existingEmail) {
+      return res.status(409).json({ error: true, message: "Email already registered" });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      userName,
+      emailAddress,
+      password: hashed,
+      mobileNo,
+      profileImage,
+    });
+
+    // Auto-login: return a JWT so the user is immediately authenticated
+    const token = jwt.sign(
+      { id: newUser._id, userName: newUser.userName },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" },
+    );
+
+    res.status(201).json({
+      error: false,
+      data: token,
+      message: "Registration successful",
+      user: newUser,
+    });
+  } catch (err) {
+    console.error("Register error:", err);
+    res.status(500).json({ error: true, message: err.message || "Registration failed" });
+  }
+};
+
+module.exports = { getAll, getByID, insert, update, remove, checkLogin, register };

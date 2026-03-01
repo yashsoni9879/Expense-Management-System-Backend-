@@ -7,6 +7,7 @@ const {
   update,
   remove,
   checkLogin,
+  register,
 } = require("../services/users.service.js");
 
 const { authMidddleware } = require("../middlewares/auth.middleware.js");
@@ -26,6 +27,9 @@ routUser.post("/login", async (req, res) => {
     });
   }
 });
+
+//register (public)
+routUser.post("/register", register);
 
 routUser.use(authMidddleware);
 
